@@ -41,27 +41,39 @@ li{
 	font-size: 20px;
 }
 
-li:hover{
+nav>ul>li:hover{
 	color: #0000ff;
 }
 
-article{
+.specs{
 	display: flex;
 	flex-direction: row;
+}
+
+.readings{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-content: space-around;
 }
 
 main>h1{
 	text-align:center;
 }
 
-article>div{
+article>div, img, article>ul, article>h2{
 	padding-left: 20px;
 	padding-right: 20px;
 }
 
+span{
+	
+}
+
 fieldset{
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	justify-content: flex-start;
 	align-items: center;
 }
 
@@ -69,6 +81,6 @@ fieldset>*{
 	margin-top: 25px;
 }
 
-input{
+input[type="number"], input[type="text"]{
 	width: 300px;
 }
