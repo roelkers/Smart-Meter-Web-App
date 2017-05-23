@@ -1,12 +1,17 @@
 $( document ).ready(function() {
-
+	/*
+	Initiliasiert die beiden Smart Meter als JavaScript Objekte.
+	Properties: Name, Kennziffer, erlaubte Stromstärke, anliegende Stromstärke, angliegende
+	Spannung, Ablesungen und zugehöriges Bild.
+	*/
 	const smOne = {
 		name: "One",
 		id: "SM00000001",
 		allowedCurrent : 50,
 		current : getCurrent(50),
 		voltage : getVoltage(),
-		readings : [{date : 'Sun May 21 2017 17:06:50 GMT+0200 (CEST)', id:"Rufus12", value: 12345},{date : 'Sun May 21 2017 17:06:50 GMT+0200 (CEST)', id:"Rufus12", value: 12345}],
+		//readings : [{date : 'Sun May 21 2017 17:06:50 GMT+0200 (CEST)', id:"Rufus12", value: 12345},{date : 'Sun May 21 2017 17:06:50 GMT+0200 (CEST)', id:"Rufus12", value: 12345}],
+		reading : [],
 		imgSrc : "https://upload.wikimedia.org/wikipedia/commons/9/9a/Intelligenter_zaehler-_Smart_meter.jpg"
 	}
 
@@ -19,27 +24,33 @@ $( document ).ready(function() {
 		readings : [],
 		imgSrc : "http://www.nikkei.com/content/pic/20141028/96958A9F889DE5EAE6E5E0E6E4E2E3E4E3E2E0E2E3E6E2E2E2E2E2E2-DSXZZO7847265016102014000000-PN1-13.jpg"
 	}
-
+	/*Hilfsfunktion zum Runden*/
 	function round(value, precision) {
     var multiplier = Math.pow(10, precision || 0);
     return Math.round(value * multiplier) / multiplier;
 	}
-
+	/*
+	Berechnet die zulässige Spannung für ein Smart Meter
+	*/
 	function getVoltage(){
 		return round(220 + 20*Math.random(),1);
 	}
-
+	/*
+	Berechnet die anliegende Stromstärke in Abhängigkeit der erlaubten Stromstärke
+	*/
 	function getCurrent(allowedCurrent){
 		return round(allowedCurrent + 5,1);
 	}
-
+	/*
+	Gibt HTML für ein Smart Meter zurück
+	*/
 	function renderMeterHTML(meter){
-
+		/* HTML für die Ablesungen des Smart Meters */
 		const readings = $.map(smOne.readings ,function(reading,i){
 			return `<li><span>${reading.id}, </span><span>${reading.date} </span><span><strong>${reading.value} kwH</strong></span></li>`;
 		});
 		const readingsHTML = readings.join("");
-		console.log(readingsHTML);
+		/*Smart Meter HTML */
 		return(`
 		 <div class="specs">
 			<div>
@@ -59,7 +70,9 @@ $( document ).ready(function() {
 		);
 
 	}
-
+	/*
+	Gibt HTML für die Übersicht zurück
+	*/
 	function renderOverviewHTML(){
 		$("#content").html(`<form id="submit-form">
 			<fieldset>
@@ -82,21 +95,28 @@ $( document ).ready(function() {
 			</fieldset>
 		</form>`);
 	}
-
+	/* Zeigt beim Klicken auf Navigations-Link Übersicht an */
 	$("#home").on("click",function(){
 		renderOverviewHTML();
 	});
-
+	/*
+	Berechnet zufällige Spannung für Smart Meter 1 und zeigt dessen Daten an
+	*/
 	$("#link-sm-one").on("click",function(){
 		smOne.voltage = getVoltage();
 		$("#content").html(renderMeterHTML(smOne));
 	});
-
+	/*
+	Berechnet zufällige Spannung für Smart Meter 2 und zeigt dessen Daten an
+	*/
 	$("#link-sm-two").on("click",function(){
 		smTwo.voltage = getVoltage();
 		$("#content").html(renderMeterHTML(smTwo));
 	});
-
+	/*
+	Event Listener für das Formular. Sobald es abgeschickt wird, wird in das zugehörige
+	Smart Meter Objekt ein neuer Eintrag eingefügt mit Datum, Nutzerkennung und kwH-Zahl.
+	*/
 	$(document).on("submit", function(e){
 		const formData = $('#submit-form').serializeArray();
 		const id = formData[0].value;
@@ -107,10 +127,8 @@ $( document ).ready(function() {
 		(meter === "sm-one") ?
 			smOne.readings.push({date : dateString,value :value, id: id}):
 		 	smTwo.readings.push({date : dateString,value :value, id: id});
-
-		console.log(smOne);
-		console.log(smTwo);
 		return false
 	})
+	/* zeigt standardmäßig die Übersicht an*/
 	renderOverviewHTML();
 });
